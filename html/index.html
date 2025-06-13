@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What's the Weather?</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <header>
+        <h1>What's the Weather in..?</h1>
+    </header>
+
+    <div id="search_bar">
+        <label for="searchInput">Locate:</label>
+        <input type="text" id="searchInput" placeholder="Enter city name">
+        <ul id="suggestionsList"></ul>
+    </div>
+
+    <div id="globe_container"></div>
+
+    <div id="toggle_container"> 
+        <label class="switch">
+            <input type="checkbox" id="rotateToggle" checked />
+            <span class="slider round"></span>
+        </label>
+        <span id="toggleLabel">Auto-Rotate: ON</span>
+    </div>
+
+    <!-- Weather Video Background -->
+    <video id="weatherVideoBg" autoplay muted loop playsinline style="position: fixed; top: 0; left: 0;
+           width: 100vw; height: 100vh;
+           object-fit: cover; z-index: -1;" class="hidden">
+        <source src="../videos/sunny.mp4" type="video/mp4">
+    </video>
+
+    <!-- Weather Card -->
+    <div id="weatherCard" class="hidden">
+        <h2 id="cityName"></h2>
+        <div id="weatherMain">
+            <div id="weatherIcon"></div>
+            <strong><div id="temperature"></strong></div>
+        </div>
+        <b><div id="weatherDetails">
+            <p id="description"></p>
+            <p id="feelsLike"></p>
+            <p id="humidity"></p>
+            <p id="windSpeed"></p>
+            <p id="rainChance"></p>
+            <p id="localTime"></p><br>
+        </div></b><hr>
+
+        <!-- Forecast Card -->
+        <div id="forecastCard" class="hidden">
+            <div id="forecastList"></div>
+            <div id="screenReader">🔊 Read Weather</div>
+        </div>
+        <hr>
+        <div id="backToGlobe" class="hidden">
+            <button onclick="location.reload();" id="backButton" >↩ Back to Globe</button>
+        </div>
+    
+    </div>
+      
+    
+
+    
+      
+      
+
+
+
+
+    <!-- Load Three.js -->
+        <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+    <!-- Load Globe.gl -->
+        <script src="https://unpkg.com/globe.gl"></script>
+    <!-- Load scripts file -->
+        <script type="module" src="../js/script.js"></script>
+</body>
+</html>
+
+
