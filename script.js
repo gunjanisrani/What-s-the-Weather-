@@ -279,35 +279,44 @@ let speech = null;
 
 document.getElementById('screenReader').addEventListener('click', () => {
     if (!currentWeatherData || !selectedCity) return;
-    handleSpeech(selectedCity.city, currentWeatherData);
+
+    if (isSpeaking && isPaused) {
+        // Resume
+        speechSynthesis.resume();
+        isPaused = false;
+        document.getElementById('screenReader').textContent = "⏸️ Pause Reading";
+    } else if (isSpeaking && !isPaused) {
+        // Pause
+        speechSynthesis.pause();
+        isPaused = true;
+        document.getElementById('screenReader').textContent = "▶️ Resume Reading";
+    } else {
+        // Speak from beginning
+        speakWeather(selectedCity.city, currentWeatherData);
+    }
 });
 
-function handleSpeech(cityName, data) {
-    // If it's currently speaking
-    if (isSpeaking) {
-        if (!isPaused) {
-            speechSynthesis.pause();
-            isPaused = true;
-            document.getElementById('screenReader').textContent = "▶️ Resume Reading";
-        } else {
-            speechSynthesis.resume();
-            isPaused = false;
-            document.getElementById('screenReader').textContent = "⏸️ Pause Reading";
-        }
-        return;
-    }
-
-    // If not already speaking, start speaking
+function speakWeather(cityName, data) {
     const textMessage = `The current weather in ${cityName} is ${data.weather[0].description} with a temperature
-        of ${data.main.temp} degrees Celsius which feels like ${data.main.feels_like} degree celsius. The humidity 
-        is ${data.main.humidity} percent, and the wind speed is ${data.wind.speed} meters per second. The local time
-        in ${cityName} is ${getLocalTimeFromOffset(data.timezone)}.`;
+        of ${data.main.temp} degrees Celsius, which feels like ${data.main.feels_like} degrees. 
+        The humidity is ${data.main.humidity} percent, and the wind speed is ${data.wind.speed} meters per second. 
+        The local time in ${cityName} is ${getLocalTimeFromOffset(data.timezone)}.`;
+
+    if (speechSynthesis.speaking || speechSynthesis.pending) {
+        speechSynthesis.cancel(); // Cancel any existing speech before starting fresh
+    }
 
     speech = new SpeechSynthesisUtterance(textMessage);
     speech.lang = 'en-IN';
     speech.volume = 0.8;
     speech.rate = 1;
     speech.pitch = 1;
+
+    speech.onstart = () => {
+        isSpeaking = true;
+        isPaused = false;
+        document.getElementById('screenReader').textContent = "⏸️ Pause Reading";
+    };
 
     speech.onend = () => {
         isSpeaking = false;
@@ -316,12 +325,15 @@ function handleSpeech(cityName, data) {
         document.getElementById('screenReader').textContent = "🔊 Read Weather";
     };
 
-    speechSynthesis.speak(speech);
-    isSpeaking = true;
-    isPaused = false;
-    document.getElementById('screenReader').textContent = "⏸️ Pause Reading";
-}
+    speech.onerror = () => {
+        isSpeaking = false;
+        isPaused = false;
+        speech = null;
+        document.getElementById('screenReader').textContent = "🔊 Read Weather";
+    };
 
+    speechSynthesis.speak(speech);
+}
 
 
 // Handle "Back to Globe" button click
