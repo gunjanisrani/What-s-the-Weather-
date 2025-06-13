@@ -31,7 +31,7 @@ let cityData = []; // Will hold filtered cities
 let currentHover = null;
 
 //Load and filter cities
-fetch('../js/data/worldcities.json')
+fetch('worldcities.json')
     .then(res => res.json())
     .then(data => {
         cityData = data.filter(city => city.population && city.population > 500000);
